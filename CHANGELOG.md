@@ -1,3 +1,16 @@
+## Unreleased (prismatic-cz fork, branch `fix/nano-cursor`)
+
+* **Fix: off-by-one in CPR (Cursor Position Report) reply.**
+  `EscapeEmitter.cursorPosition()` was emitting raw 0-indexed buffer
+  coordinates, but the VT100 CPR reply format (`CSI row ; col R`) is
+  1-indexed. Every DSR (`CSI 6n`) query therefore returned a position
+  off by one in both axes. ncurses applications like nano and vim that
+  sync their internal cursor model from CPR ended up editing at the
+  wrong visible position. Manifests only on raw SSH (tmux answers CPR
+  from its own state, masking the bug). Fixes [#58], [#94].
+
+  Regression test: `test/src/regression/nano_vim_cursor_test.dart`.
+
 ## [4.0.0] - 2024-02-27
 * Update for Flutter 3.19 [#190]. Thanks [@domesticmouse].
 * Fix designate charset logic [#186]. Thanks [@djnalluri].
